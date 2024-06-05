@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Bike_tracking_app</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="button_start_tracking">Start tracking</string>
+    <string name="button_stop_tracking">Stop tracking</string>
+
+    <string name="show_tracking_button">Tracking</string>
+    <string name="show_history_button">History</string>
+
+
+    <string name="toast_msg">Warum drückst du mich !!</string>
+
+
+
+    <string name="textview_distance">
+        0.0m
+    </string>
+    <string name="textview_speed">
+        0.0m/s
+    </string>
+    <string name="textview_time">
+        0.0s
+    </string>
+
+    <string name="myString">
+      BikeTrackingBerlin
+    </string>
+    <string name="todo">TODO</string>
+</resources>
