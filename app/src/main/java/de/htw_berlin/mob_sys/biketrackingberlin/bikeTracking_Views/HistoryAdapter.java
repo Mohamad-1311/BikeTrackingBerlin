@@ -9,25 +9,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.htw_berlin.mob_sys.biketrackingberlin.R;
-import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.Fahrdaten;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
-    private ArrayList<Fahrdaten> fahrdatenList;
-    private OnItemClickListener listener;
+    private List<TrackingData> trackingDataList;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
+    public HistoryAdapter() {
+        this.trackingDataList = new ArrayList<>();
     }
 
-    public HistoryAdapter(ArrayList<Fahrdaten> fahrdatenList) {
-        this.fahrdatenList = fahrdatenList;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public void updateList(List<TrackingData> newList) {
+        trackingDataList.clear();
+        trackingDataList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,46 +37,34 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Fahrdaten fahrdaten = fahrdatenList.get(position);
-        holder.bind(fahrdaten);
+        TrackingData trackingData = trackingDataList.get(position);
+        holder.bind(trackingData);
     }
 
     @Override
     public int getItemCount() {
-        return fahrdatenList.size();
+        return trackingDataList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewFahrtID;
         private TextView textViewDatum;
         private TextView textViewStrecke;
-        private TextView textViewSpeed; // TextView für die Geschwindigkeit hinzugefügt
+        private TextView textViewSpeed;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewFahrtID = itemView.findViewById(R.id.textView_fahrtID);
             textViewDatum = itemView.findViewById(R.id.textView_datum);
             textViewStrecke = itemView.findViewById(R.id.textView_strecke);
-            textViewSpeed = itemView.findViewById(R.id.textView_speed); // TextView-Referenz für die Geschwindigkeit initialisiert
-
-            itemView.setOnClickListener(this);
+            textViewSpeed = itemView.findViewById(R.id.textView_speed); // Falls benötigt
         }
 
-        public void bind(Fahrdaten fahrdaten) {
-            textViewFahrtID.setText(String.valueOf(fahrdaten.getFahrtID()));
-            textViewDatum.setText(fahrdaten.getDatum());
-            textViewStrecke.setText(fahrdaten.getStrecke());
-            textViewSpeed.setText(String.valueOf(fahrdaten.getGeschwindigkeit()));
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (listener != null) {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(position);
-                }
-            }
+        public void bind(TrackingData trackingData) {
+            textViewFahrtID.setText(String.valueOf(trackingData.id));
+            //textViewDatum.setText(trackingData.datum); // Hier entsprechend anpassen, falls nötig
+            textViewStrecke.setText(String.valueOf(trackingData.totalDistance)); // Hier anpassen
+            textViewSpeed.setText(String.valueOf(trackingData.speed)); // Hier anpassen
         }
     }
 }

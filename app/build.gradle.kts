@@ -44,11 +44,33 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.play.services.maps)
-    implementation(libs.room.runtime)
-    implementation(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    // JUnit 4 für Android Tests
+    testImplementation("junit:junit:4.13.2")
+
+    // AndroidX Test Kernbibliotheken
+    androidTestImplementation("androidx.test:core:1.4.0")
+
+    // AndroidX JUnit Erweiterungen
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+
+    // Mockito für Mocking von Abhängigkeiten in Tests
+    testImplementation("org.mockito:mockito-core:3.11.2")
+
+    // Room Test Support
+    androidTestImplementation("androidx.room:room-testing:2.4.0")
+
+    // Wenn Sie Espresso-Tests schreiben möchten (optional, für UI-Tests)
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+
 
 
 }

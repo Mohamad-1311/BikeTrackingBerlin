@@ -15,6 +15,7 @@ import org.osmdroid.util.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.htw_berlin.mob_sys.biketrackingberlin.DatabaseClient;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.TrackingActivity;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingDatabase;
@@ -30,15 +31,13 @@ public class TrackingController implements LocationListener {
     private double totalDistance = 0.0;
     private List<GeoPoint> geoPoints;
 
-
-
-
     public TrackingController(TrackingActivity view) {
         this.view = view;
         this.model = new TrackingModel();
         locationManager = (LocationManager) view.getSystemService(Context.LOCATION_SERVICE);
         geoPoints = new ArrayList<>();
-
+        // Initialisiere die Room-Datenbank über den DatabaseClient
+        db = DatabaseClient.getInstance(view.getApplicationContext()).getTrackingDatabase();
     }
 
     public void startTracking() {
