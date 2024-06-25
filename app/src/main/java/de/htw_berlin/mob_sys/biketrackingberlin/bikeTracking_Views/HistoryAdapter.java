@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         trackingDataList.clear();
         trackingDataList.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public TrackingData getItem(int position) {
+        return trackingDataList.get(position);
+    }
+
+    public void removeItem(int position) {
+        trackingDataList.remove(position);
+        notifyItemRemoved(position);
     }
 
     @NonNull
@@ -63,8 +73,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         public void bind(TrackingData trackingData) {
             textViewFahrtID.setText(String.valueOf(trackingData.id));
             //textViewDatum.setText(trackingData.datum); // Hier entsprechend anpassen, falls nötig
-            textViewStrecke.setText(String.valueOf(trackingData.totalDistance)); // Hier anpassen
-            textViewSpeed.setText(String.valueOf(trackingData.speed)); // Hier anpassen
+            textViewStrecke.setText(formatDistance(trackingData.totalDistance)); // Hier anpassen
+            textViewSpeed.setText(formatSpeed(trackingData.speed)); // Hier anpassen
+        }
+
+        private String formatDistance(double distance) {
+            DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+            return decimalFormat.format(distance) + " km";
+        }
+
+        private String formatSpeed(double speed) {
+            DecimalFormat decimalFormat = new DecimalFormat("#0.0");
+            return decimalFormat.format(speed) + " km/h";
         }
     }
 }

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -112,11 +113,14 @@ public class TrackingActivity extends AppCompatActivity {
         startTrackingButton = binding.startTracking;
         stopTrackingButton = binding.stopTracking;
 
+        updateUI("0", 0, 0.0);
+
         // Button-Click-Listener
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 controller.onStartTrackingClicked();
+                showToast("Tracking gestartet");
             }
         });
 
@@ -124,6 +128,8 @@ public class TrackingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 controller.onStopTrackingClicked();
+                showToast("Tracking gestoppt");
+                updateUI("0", 0, 0.0);
             }
         });
 
@@ -176,9 +182,21 @@ public class TrackingActivity extends AppCompatActivity {
         }
     }
 
-    public void updateUI(double distance, long timeInSeconds, double speed) {
+    public void updateUI(String distance, long timeInSeconds, double speed) {
         distanceTextView.setText(getString(R.string.textview_distance, String.valueOf(distance)));
-        timeTextView.setText(getString(R.string.textview_time, String.valueOf(timeInSeconds)));
+        timeTextView.setText(getString(R.string.textview_time, formatTime(timeInSeconds)));
         speedTextView.setText(getString(R.string.textview_speed, String.valueOf(speed)));
+
+    }
+
+    private String formatTime(long timeInSeconds) {
+        long hours = timeInSeconds / 3600;
+        long minutes = (timeInSeconds % 3600) / 60;
+        long seconds = timeInSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

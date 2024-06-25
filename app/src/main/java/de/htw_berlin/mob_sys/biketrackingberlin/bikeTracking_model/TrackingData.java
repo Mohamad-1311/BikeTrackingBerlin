@@ -12,5 +12,5 @@ public class TrackingData {
     public long elapsedTimeInSeconds;
     public double speed;
 
-    // Konstruktor, Getter und Setter
+
 }

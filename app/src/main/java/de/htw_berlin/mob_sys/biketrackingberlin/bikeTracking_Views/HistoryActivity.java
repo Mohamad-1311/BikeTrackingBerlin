@@ -1,10 +1,15 @@
 package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +46,43 @@ public class HistoryActivity extends AppCompatActivity {
 
         // Laden der Tracking-Daten aus der Datenbank und Aktualisieren des Adapters
         loadTrackingData();
+
+        // Swipe zum Löschen mit rotem Hintergrund
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            private Drawable background;
+            private boolean initiated;
+
+            private void init() {
+                background = ContextCompat.getDrawable(getApplicationContext(), R.drawable.drawable);
+                initiated = true;
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                TrackingData deletedItem = historyAdapter.getItem(position);
+                historyAdapter.removeItem(position);
+                deleteTrackingData(deletedItem);
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                View itemView = viewHolder.itemView;
+                if (!initiated) {
+                    init();
+                }
+                // Zeichnet den roten Hintergrund
+                background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                background.draw(c);
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     private void loadTrackingData() {
@@ -58,6 +100,16 @@ public class HistoryActivity extends AppCompatActivity {
                         historyAdapter.updateList(trackingDataList);
                     }
                 });
+            }
+        }).start();
+    }
+
+    private void deleteTrackingData(TrackingData trackingData) {
+        // Datenbankzugriff in einem separaten Thread ausführen
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.trackingDataDao().delete(trackingData);
             }
         }).start();
     }

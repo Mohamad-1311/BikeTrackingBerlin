@@ -1,6 +1,7 @@
 package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -13,4 +14,7 @@ public interface TrackingDataDao {
 
     @Query("SELECT * FROM tracking_data")
     List<TrackingData> getAllTrackingData();
+
+    @Delete
+    void delete(TrackingData trackingData);
 }
