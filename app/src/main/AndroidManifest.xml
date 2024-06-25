@@ -19,7 +19,7 @@
         android:theme="@style/Theme.BikeTrackingBerlin"
         tools:targetApi="31" >
         <activity
-            android:name=".StartActivity"
+            android:name=".bikeTracking_Views.StartActivity"
             android:exported="true"
             android:theme="@style/Theme.BikeTrackingBerlin" >
             <intent-filter>
@@ -32,20 +32,20 @@
 
         <!-- Declare the TrackingActivity -->
         <activity
-            android:name=".TrackingActivity"
+            android:name=".bikeTracking_Views.TrackingActivity"
             android:exported="true"
             android:theme="@style/Theme.BikeTrackingBerlin" >
         </activity>
 
         <!-- Declare the HistoryActivity -->
         <activity
-            android:name=".HistoryActivity"
+            android:name=".bikeTracking_Views.HistoryActivity"
             android:exported="true"
             android:theme="@style/Theme.BikeTrackingBerlin" >
         </activity>
 
         <activity
-            android:name=".FahrdatenDetailActivity"
+            android:name=".bikeTracking_Views.FahrdatenDetailActivity"
             android:exported="true"
             android:theme="@style/Theme.BikeTrackingBerlin" >
 

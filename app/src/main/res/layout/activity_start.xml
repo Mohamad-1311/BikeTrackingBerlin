@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screenBackground"
-    tools:context=".StartActivity">
+    tools:context=".bikeTracking_Views.StartActivity">
+
 
     <TextView
         android:id="@+id/textview_first"

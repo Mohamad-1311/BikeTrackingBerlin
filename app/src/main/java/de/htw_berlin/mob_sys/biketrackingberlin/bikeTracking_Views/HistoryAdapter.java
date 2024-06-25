@@ -1,4 +1,4 @@
-package de.htw_berlin.mob_sys.biketrackingberlin;
+package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.htw_berlin.mob_sys.biketrackingberlin.tracking_data.Fahrdaten;
+import de.htw_berlin.mob_sys.biketrackingberlin.R;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.Fahrdaten;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 

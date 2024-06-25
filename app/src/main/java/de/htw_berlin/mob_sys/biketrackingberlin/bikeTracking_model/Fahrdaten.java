@@ -1,5 +1,5 @@
 // Fahrdaten.java
-package de.htw_berlin.mob_sys.biketrackingberlin.tracking_data;
+package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model;
 
 public class Fahrdaten {
     private int fahrtID;

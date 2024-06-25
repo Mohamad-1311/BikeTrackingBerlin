@@ -6,19 +6,19 @@
 
     <activity
         android:id="@+id/startActivity"
-        android:name="de.htw_berlin.mob_sys.biketrackingberlin.StartActivity"
+        android:name="de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.StartActivity"
         android:label="activity_start"
         tools:layout="@layout/activity_start" />
 
     <activity
         android:id="@+id/trackingActivity"
-        android:name="de.htw_berlin.mob_sys.biketrackingberlin.TrackingActivity"
+        android:name="de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.TrackingActivity"
         android:label="activity_tracking"
         tools:layout="@layout/activity_tracking" />
 
     <activity
         android:id="@+id/historyActivity"
-        android:name="de.htw_berlin.mob_sys.biketrackingberlin.HistoryActivity"
+        android:name="de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.HistoryActivity"
         android:label="History Activity"
         tools:layout="@layout/activity_history" >
         <action
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/fahrdatenDetailFragment"
-        android:name="de.htw_berlin.mob_sys.biketrackingberlin.FahrdatenDetailActivity"
+        android:name="de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.FahrdatenDetailActivity"
         android:label="Fahrdaten Detail" />
 
 </navigation>

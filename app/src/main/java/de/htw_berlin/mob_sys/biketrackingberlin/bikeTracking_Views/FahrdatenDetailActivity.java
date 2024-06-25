@@ -1,4 +1,4 @@
-package de.htw_berlin.mob_sys.biketrackingberlin;
+package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import de.htw_berlin.mob_sys.biketrackingberlin.R;
 
 public class FahrdatenDetailActivity extends AppCompatActivity {
 

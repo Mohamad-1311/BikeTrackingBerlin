@@ -15,15 +15,10 @@
 
 
 
-    <string name="textview_distance">
-        0.0m
-    </string>
-    <string name="textview_speed">
-        0.0m/s
-    </string>
-    <string name="textview_time">
-        0.0s
-    </string>
+    <string name="textview_distance">%s km</string>
+    <string name="textview_time">%s seconds</string>
+    <string name="textview_speed">%s km/h</string>
+
 
     <string name="myString">
       BikeTrackingBerlin

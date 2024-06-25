@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screenBackground"
-    tools:context=".TrackingActivity">
+    tools:context=".bikeTracking_Views.TrackingActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

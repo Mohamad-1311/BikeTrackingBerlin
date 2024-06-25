@@ -1,8 +1,7 @@
-package de.htw_berlin.mob_sys.biketrackingberlin;
+package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 
 import static android.app.PendingIntent.getActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,13 +13,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
-import de.htw_berlin.mob_sys.biketrackingberlin.tracking_data.Fahrdaten;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.Fahrdaten;
+import de.htw_berlin.mob_sys.biketrackingberlin.R;
 
 public class HistoryActivity extends AppCompatActivity {
 

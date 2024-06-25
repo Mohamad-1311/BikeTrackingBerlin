@@ -13,6 +13,8 @@ osmdroidAndroid = "6.1.18"
 osmdroidWms = "6.1.18"
 osmdroidMapsforge = "6.1.18"
 osmdroidGeopackage = "6.1.18"
+roomRuntime = "2.7.0-alpha03"
+roomCompiler = "2.7.0-alpha03"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,6 +30,8 @@ osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.
 osmdroid-wms = { group = "org.osmdroid", name = "osmdroid-wms", version.ref = "osmdroidWms" }
 osmdroid-mapsforge = { group = "org.osmdroid", name = "osmdroid-mapsforge", version.ref = "osmdroidMapsforge" }
 osmdroid-geopackage = { group = "org.osmdroid", name = "osmdroid-geopackage", version.ref = "osmdroidGeopackage" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
