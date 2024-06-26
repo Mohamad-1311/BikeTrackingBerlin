@@ -127,7 +127,7 @@ public class TrackingController implements LocationListener {
         long elapsedTimeInSeconds = (System.currentTimeMillis() - startTime) / 1000;
 
         // Berechne die aktuelle Geschwindigkeit
-        double speed = calculateSpeed();
+        double speed = calculateSpeed(elapsedTimeInSeconds);
 
         // Setze die Werte im Modell
         model.setTotalDistance(totalDistance);
@@ -156,20 +156,17 @@ public class TrackingController implements LocationListener {
         return results[0];
     }
 
-    private double calculateSpeed() {
-        if (geoPoints.size() < 2) {
+    private double calculateSpeed(long elapsedTimeInSeconds) {
+        if (elapsedTimeInSeconds == 0) {
             return 0.0;
         }
-        GeoPoint startPoint = geoPoints.get(0);
-        GeoPoint endPoint = geoPoints.get(geoPoints.size() - 1);
-        float distance = distanceBetween(startPoint, endPoint);
-        long elapsedTimeInMillis = System.currentTimeMillis() - startTime;
-        double speed = (distance / 1000) / (elapsedTimeInMillis / 1000.0 / 3600.0); // in km/h
+        // Geschwindigkeit = Gesamtstrecke (in km) / Zeit (in Stunden)
+        double speed = totalDistance / (elapsedTimeInSeconds / 3600.0);
         return speed;
     }
 
     private String formatDistance(double distance) {
-        DecimalFormat decimalFormat = new DecimalFormat("#0.000");
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         return decimalFormat.format(distance);
     }
 

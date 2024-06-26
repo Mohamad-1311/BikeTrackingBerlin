@@ -113,7 +113,7 @@ public class TrackingActivity extends AppCompatActivity {
         startTrackingButton = binding.startTracking;
         stopTrackingButton = binding.stopTracking;
 
-        updateUI("0", 0, 0.0);
+        updateUI("0.00", 0, 0.0);
 
         // Button-Click-Listener
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +129,7 @@ public class TrackingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 controller.onStopTrackingClicked();
                 showToast("Tracking gestoppt");
-                updateUI("0", 0, 0.0);
+                updateUI("0.00", 0, 0.0);
             }
         });
 
@@ -183,10 +183,9 @@ public class TrackingActivity extends AppCompatActivity {
     }
 
     public void updateUI(String distance, long timeInSeconds, double speed) {
-        distanceTextView.setText(getString(R.string.textview_distance, String.valueOf(distance)));
+        distanceTextView.setText(getString(R.string.textview_distance, distance));
         timeTextView.setText(getString(R.string.textview_time, formatTime(timeInSeconds)));
-        speedTextView.setText(getString(R.string.textview_speed, String.valueOf(speed)));
-
+        speedTextView.setText(getString(R.string.textview_speed, String.format("%.2f", speed)));
     }
 
     private String formatTime(long timeInSeconds) {
