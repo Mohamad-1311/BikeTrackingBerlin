@@ -1,39 +1,46 @@
 package de.htw_berlin.mob_sys.biketrackingberlin.controller;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Context;
 
 import java.util.List;
 
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.HistoryActivity;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.HistoryAdapter;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingDatabase;
-import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.HistoryAdapter;
 
 public class HistoryController {
 
+    private Context context;
     private TrackingDatabase db;
     private HistoryAdapter historyAdapter;
 
-    public HistoryController(TrackingDatabase db, HistoryAdapter historyAdapter) {
-        this.db = db;
+    public HistoryController(Context context, HistoryAdapter historyAdapter) {
+        this.context = context;
         this.historyAdapter = historyAdapter;
+        this.db = TrackingDatabase.getInstance(context);
     }
 
     public void loadTrackingData() {
-        // Datenbankzugriff in einem separaten Thread ausführen
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // Tracking-Daten aus der Datenbank abrufen
                 List<TrackingData> trackingDataList = db.trackingDataDao().getAllTrackingData();
-
-                // Auf dem UI-Thread aktualisieren
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                ((HistoryActivity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        historyAdapter.notifyDataSetChanged(); // Adapter informieren, dass sich die Daten geändert haben
+                        historyAdapter.updateList(trackingDataList);
                     }
                 });
+            }
+        }).start();
+    }
+
+    public void deleteTrackingData(TrackingData trackingData) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.trackingDataDao().delete(trackingData);
             }
         }).start();
     }

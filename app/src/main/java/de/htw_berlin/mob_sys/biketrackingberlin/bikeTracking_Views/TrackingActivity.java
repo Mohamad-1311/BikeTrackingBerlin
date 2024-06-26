@@ -174,8 +174,7 @@ public class TrackingActivity extends AppCompatActivity {
                     mLocationOverlay.enableMyLocation();
                     mLocationOverlay.enableFollowLocation();
                 } else {
-                    // Berechtigung wurde verweigert
-                    // Informiere den Benutzer über die Notwendigkeit der Berechtigung
+                    showToast("Berechtigung wurde verweigert");
                 }
                 return;
             }

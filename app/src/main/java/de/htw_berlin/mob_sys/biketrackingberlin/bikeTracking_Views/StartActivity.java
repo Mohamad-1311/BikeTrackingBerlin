@@ -21,9 +21,8 @@ public class StartActivity extends AppCompatActivity {
         trackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Erstelle einen Intent, um zur TrackingActivity zu wechseln
                 Intent intent = new Intent(StartActivity.this, TrackingActivity.class);
-                startActivity(intent); // Starte die TrackingActivity
+                startActivity(intent);
             }
         });
 
@@ -31,9 +30,8 @@ public class StartActivity extends AppCompatActivity {
         historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Erstelle einen Intent, um zur HistoryActivity zu wechseln
                 Intent intent = new Intent(StartActivity.this, HistoryActivity.class);
-                startActivity(intent); // Starte die HistoryActivity
+                startActivity(intent);
             }
         });
     }

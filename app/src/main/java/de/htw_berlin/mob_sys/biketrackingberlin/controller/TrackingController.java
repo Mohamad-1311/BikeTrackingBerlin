@@ -25,7 +25,7 @@ import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingModel
 
 public class TrackingController implements LocationListener {
 
-    private static final float MIN_MOVEMENT_THRESHOLD = 2.0f; // Minimale Bewegungsschwelle in Metern
+    private static final float MIN_MOVEMENT_THRESHOLD = 2.0f;
 
     private TrackingActivity view;
     private TrackingModel model;

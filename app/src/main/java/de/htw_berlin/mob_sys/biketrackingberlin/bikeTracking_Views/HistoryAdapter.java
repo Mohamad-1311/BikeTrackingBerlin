@@ -18,6 +18,7 @@ import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
     private List<TrackingData> trackingDataList;
+    private OnItemClickListener onItemClickListener;
 
     public HistoryAdapter() {
         this.trackingDataList = new ArrayList<>();
@@ -38,6 +39,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         notifyItemRemoved(position);
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,7 +61,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return trackingDataList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView textViewFahrtID;
         private TextView textViewDatum;
         private TextView textViewStrecke;
@@ -68,11 +73,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             textViewDatum = itemView.findViewById(R.id.textView_datum);
             textViewStrecke = itemView.findViewById(R.id.textView_strecke);
             textViewSpeed = itemView.findViewById(R.id.textView_speed); // Falls benötigt
+            itemView.setOnClickListener(this);
         }
 
         public void bind(TrackingData trackingData) {
             textViewFahrtID.setText(String.valueOf(trackingData.id));
-            //textViewDatum.setText(trackingData.datum); // Hier entsprechend anpassen, falls nötig
             textViewStrecke.setText(formatDistance(trackingData.totalDistance)); // Hier anpassen
             textViewSpeed.setText(formatSpeed(trackingData.speed)); // Hier anpassen
         }
@@ -86,5 +91,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             DecimalFormat decimalFormat = new DecimalFormat("#0.0");
             return decimalFormat.format(speed) + " km/h";
         }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION && onItemClickListener != null) {
+                onItemClickListener.onItemClick(trackingDataList.get(position));
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(TrackingData trackingData);
     }
 }
