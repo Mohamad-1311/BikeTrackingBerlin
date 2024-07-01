@@ -26,6 +26,8 @@ import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingDatabase;
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingModel;
 
+
+
 public class TrackingController implements LocationListener {
 
     private static final float MIN_MOVEMENT_THRESHOLD = 2.0f;
@@ -41,7 +43,8 @@ public class TrackingController implements LocationListener {
 
     private Handler handler = new Handler();
     private Runnable timerRunnable;
-    private String startDate; // Hinzufügen des Datumsfeldes
+
+    private String startDate;
 
     public TrackingController(TrackingActivity view) {
         this.view = view;
@@ -57,7 +60,7 @@ public class TrackingController implements LocationListener {
         totalDistance = 0.0;
         geoPoints.clear();
         lastKnownGeoPoint = null;
-        startDate = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(new Date());
+        startDate = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date()); // Datum setzen
 
         if (ContextCompat.checkSelfPermission(view, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, MIN_MOVEMENT_THRESHOLD, this);
@@ -87,52 +90,11 @@ public class TrackingController implements LocationListener {
                 trackingData.elapsedTimeInSeconds = model.getElapsedTimeInSeconds();
                 trackingData.speed = model.getSpeed();
                 trackingData.date = startDate;
-                trackingData.geoPoints = encodePolyline(geoPoints);
+                trackingData.geoPoints = PolylineUtil.encodePolyline(geoPoints); // GeoPoints speichern
                 db.trackingDataDao().insert(trackingData);
             }
         }).start();
     }
-
-    // Methode zum Encodieren der Polyline-Daten
-    private String encodePolyline(List<GeoPoint> geoPoints) {
-        StringBuilder encoded = new StringBuilder();
-        long lastLat = 0, lastLng = 0;
-
-        for (GeoPoint point : geoPoints) {
-            long lat = Math.round(point.getLatitude() * 1e5);
-            long lng = Math.round(point.getLongitude() * 1e5);
-
-            long dLat = lat - lastLat;
-            long dLng = lng - lastLng;
-
-            lastLat = lat;
-            lastLng = lng;
-
-            encoded.append(encodeSignedNumber(dLat));
-            encoded.append(encodeSignedNumber(dLng));
-        }
-        return encoded.toString();
-    }
-
-    private String encodeSignedNumber(long num) {
-        long sgnNum = num << 1;
-        if (num < 0) {
-            sgnNum = ~(sgnNum);
-        }
-        return encodeNumber(sgnNum);
-    }
-
-    private String encodeNumber(long num) {
-        StringBuilder encodeString = new StringBuilder();
-        while (num >= 0x20) {
-            encodeString.append((char)((0x20 | ((int)num & 0x1f)) + 63));
-            num >>= 5;
-        }
-        encodeString.append((char)(num + 63));
-        return encodeString.toString();
-    }
-
-
 
     public void onStartTrackingClicked() {
         startTracking();
@@ -141,7 +103,6 @@ public class TrackingController implements LocationListener {
     public void onStopTrackingClicked() {
         stopTracking();
     }
-
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
@@ -157,9 +118,7 @@ public class TrackingController implements LocationListener {
 
                 // Berechnungen für Strecke, Zeit usw. aktualisieren
                 updateTrackingData();
-
-                // Polyline aktualisieren
-                view.updatePolyline(geoPoints);
+                view.updatePolyline(geoPoints); // Polyline aktualisieren
             }
         } else {
             // Erste Position setzen
@@ -168,37 +127,11 @@ public class TrackingController implements LocationListener {
 
             // Berechnungen für Strecke, Zeit usw. aktualisieren
             updateTrackingData();
-
-            // Polyline aktualisieren
-            view.updatePolyline(geoPoints);
+            view.updatePolyline(geoPoints); // Polyline aktualisieren
         }
     }
 
-    public void savePolyline() {
-        // Polyline in die Datenbank speichern
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                TrackingData trackingData = new TrackingData();
-                trackingData.totalDistance = model.getTotalDistance();
-                trackingData.elapsedTimeInSeconds = model.getElapsedTimeInSeconds();
-                trackingData.speed = model.getSpeed();
-                trackingData.geoPoints = geoPointsToString(geoPoints); // GeoPoints als String speichern
-                db.trackingDataDao().insert(trackingData);
-            }
-        }).start();
-    }
-
-    private String geoPointsToString(List<GeoPoint> geoPoints) {
-        StringBuilder sb = new StringBuilder();
-        for (GeoPoint point : geoPoints) {
-            sb.append(point.getLatitude()).append(",").append(point.getLongitude()).append(";");
-        }
-        return sb.toString();
-    }
-
-
-    public void updateTrackingData() {
+    private void updateTrackingData() {
         // Berechne die Gesamtstrecke
         totalDistance = calculateTotalDistance();
 
@@ -217,7 +150,7 @@ public class TrackingController implements LocationListener {
         view.updateUI(formatDistance(totalDistance), elapsedTimeInSeconds, speed);
     }
 
-    public double calculateTotalDistance() {
+    private double calculateTotalDistance() {
         double distance = 0.0;
         for (int i = 1; i < geoPoints.size(); i++) {
             GeoPoint startPoint = geoPoints.get(i - 1);
@@ -241,6 +174,7 @@ public class TrackingController implements LocationListener {
         return results[0];
     }
 
+
     private double calculateSpeed(long elapsedTimeInSeconds) {
         if (elapsedTimeInSeconds == 0) {
             return 0.0;
@@ -250,36 +184,20 @@ public class TrackingController implements LocationListener {
         return speed;
     }
 
+
+
     private String formatDistance(double distance) {
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         return decimalFormat.format(distance);
     }
 
-    public void setModel(TrackingModel model) {
-        this.model = model;
+    private String geoPointsToString(List<GeoPoint> geoPoints) {
+        StringBuilder sb = new StringBuilder();
+        for (GeoPoint geoPoint : geoPoints) {
+            sb.append(geoPoint.getLatitude()).append(",").append(geoPoint.getLongitude()).append(";");
+        }
+        return sb.toString();
     }
-
-    public void setDatabase(TrackingDatabase db) {
-        this.db = db;
-    }
-
-    public void setLocationManager(LocationManager locationManager) {
-        this.locationManager = locationManager;
-    }
-
-    public void setHandler(Handler handler) {
-        this.handler = handler;
-    }
-
-    public GeoPoint getLastKnownGeoPoint() {
-        return lastKnownGeoPoint;
-    }
-
-    public List<GeoPoint> getGeoPoints() {
-        return geoPoints;
-    }
-
-
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {}

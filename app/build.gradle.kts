@@ -82,6 +82,6 @@ dependencies {
 
     androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
-
+    implementation("com.google.maps.android:android-maps-utils:2.2.5")
     testImplementation("androidx.arch.core:core-testing:2.1.0")
 }

@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="Tests in 'de.htw_berlin.mob_sys.biketrackingberlin'">
+        <State />
+      </entry>
       <entry key="TrackingActivityE2ETest">
         <State />
       </entry>
@@ -9,22 +12,12 @@
         <State />
       </entry>
       <entry key="app">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="26211FDF6001FU" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-06-29T14:20:14.661762Z" />
-        </State>
+        <State />
       </entry>
       <entry key="testFullScenario()">
+        <State />
+      </entry>
+      <entry key="testTrackingInProgress()">
         <State />
       </entry>
     </value>

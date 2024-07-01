@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htw_berlin.mob_sys.biketrackingberlin.R;
+import de.htw_berlin.mob_sys.biketrackingberlin.controller.PolylineUtil;
+import de.htw_berlin.mob_sys.biketrackingberlin.controller.TrackingController;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.PolyUtil;
 
 public class FahrdatenDetailActivity extends AppCompatActivity {
 
@@ -31,6 +36,8 @@ public class FahrdatenDetailActivity extends AppCompatActivity {
     private CompassOverlay mCompassOverlay;
     private ScaleBarOverlay mScaleBarOverlay;
     private Polyline polyline;
+
+    private TrackingController trackingController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,7 +100,7 @@ public class FahrdatenDetailActivity extends AppCompatActivity {
 
             // Polyline zeichnen
             if (polylineEncoded != null && !polylineEncoded.isEmpty()) {
-                List<GeoPoint> geoPoints = decodePolyline(polylineEncoded);
+                List<GeoPoint> geoPoints = PolylineUtil.decodePolyline(polylineEncoded);
                 polyline.setPoints(geoPoints);
                 if (!geoPoints.isEmpty()) {
                     map.getController().setCenter(geoPoints.get(0));
@@ -118,35 +125,5 @@ public class FahrdatenDetailActivity extends AppCompatActivity {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    private List<GeoPoint> decodePolyline(String encoded) {
-        List<GeoPoint> geoPoints = new ArrayList<>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
 
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            GeoPoint p = new GeoPoint(lat / 1E5, lng / 1E5);
-            geoPoints.add(p);
-        }
-
-        return geoPoints;
-    }
 }

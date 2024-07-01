@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
@@ -19,9 +17,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osmdroid.util.GeoPoint;
 
-import de.htw_berlin.mob_sys.biketrackingberlin.R;
+import java.util.Locale;
+
 import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views.TrackingActivity;
 import de.htw_berlin.mob_sys.biketrackingberlin.controller.TrackingController;
 
@@ -30,10 +28,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.core.StringContains.containsString;
-
-import java.util.Locale;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackingActivityTest {
@@ -69,9 +63,9 @@ public class TrackingActivityTest {
 
         activityScenarioRule.getScenario().onActivity(activity -> {
             activity.getController().onLocationChanged(location);
+       //     activity.getController().updateLocationOverlay(location); // Update the location overlay to move the user on the map
         });
     }
-
 
     @Test
     public void testStartTrackingButton() {
@@ -115,16 +109,20 @@ public class TrackingActivityTest {
         // Simuliere Bewegung vom Schloss Charlottenburg zur HTW Berlin Wilhelminenhof
         double[][] points = {
                 {52.5208, 13.2950}, // Schloss Charlottenburg
-                {52.5200, 13.4000}, // Zwischenpunkt 1
-                {52.5150, 13.4500}, // Zwischenpunkt 2
-                {52.5050, 13.5000}, // Zwischenpunkt 3
-                {52.4900, 13.5200}, // Zwischenpunkt 4
-                {52.4850, 13.5250}  // HTW Berlin Wilhelminenhof
+                {52.5210, 13.3000}, // Zwischenpunkt 1
+                {52.5220, 13.3050}, // Zwischenpunkt 2
+                {52.5230, 13.3100}, // Zwischenpunkt 3
+                {52.5240, 13.3150}, // Zwischenpunkt 4
+                {52.5250, 13.3200}, // Zwischenpunkt 5
+                {52.5260, 13.3250}, // Zwischenpunkt 6
+                {52.5270, 13.3300}, // Zwischenpunkt 7
+                {52.5280, 13.3350}, // Zwischenpunkt 8
+                {52.5290, 13.3400}  // HTW Berlin Wilhelminenhof
         };
 
-        // Simuliere die Bewegung mit der Geschwindigkeit von 50 km/h (13.89 m/s)
+        // Simuliere die Bewegung mit einer dynamischen Geschwindigkeit
         for (double[] point : points) {
-            simulateLocationUpdate(point[0], point[1], 1, 13.89f); // 50 km/h = 13.89 m/s
+            simulateLocationUpdate(point[0], point[1], 1, 13.89f); // 13.89 m/s = 50 km/h
             Thread.sleep(1000); // Warte eine Sekunde zwischen den Aktualisierungen
         }
 
@@ -132,12 +130,17 @@ public class TrackingActivityTest {
         activityScenarioRule.getScenario().onActivity(activity -> {
             TrackingController controller = activity.getController();
             double totalDistanceKm = controller.getTotalDistance();
+            //double speed = controller.getModel().getSpeed();
 
-            // Überprüfe, ob die UI-Elemente aktualisiert wurden
-            onView(withId(R.id.textview_distance)).check(matches(CustomMatchers.withTextIgnoringCommas(String.format(Locale.US, "%.2f km", totalDistanceKm))));
-            onView(withId(R.id.textview_time)).check(matches(withText("00:00:05")));
+            // Update UI on the main thread
+            activity.runOnUiThread(() -> {
+                onView(withId(R.id.textview_distance)).check(matches(CustomMatchers.withTextIgnoringCommas(String.format(Locale.US, "%.2f km", totalDistanceKm))));
+                onView(withId(R.id.textview_time)).check(matches(withText("00:00:10")));
+              //  onView(withId(R.id.textview_speed)).check(matches(withText(String.format(Locale.US, "%.2f km/h", speed))));
+            });
         });
     }
+
     @Test
     public void testPolylineUpdate() {
         onView(withId(R.id.start_tracking)).perform(click());

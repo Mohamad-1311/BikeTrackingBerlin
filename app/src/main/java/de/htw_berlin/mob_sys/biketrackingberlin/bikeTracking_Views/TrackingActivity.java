@@ -3,9 +3,6 @@ package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,7 +15,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -57,7 +53,6 @@ public class TrackingActivity extends AppCompatActivity {
     private LocationManager locationManager;
 
     private TrackingDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +77,6 @@ public class TrackingActivity extends AppCompatActivity {
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation(); // Automatisches Folgen der Benutzerposition
-
-        // Initialisiere die Datenbank
-        db = TrackingDatabase.getInstance(getApplicationContext());
-
         map.getOverlays().add(mLocationOverlay);
 
         // CompassOverlay hinzufügen
@@ -110,13 +101,15 @@ public class TrackingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialisiere die Polyline und GeoPoints
-        polyline = new Polyline();
+        polyline = new Polyline(); // Polyline initialisieren
         geoPoints = new ArrayList<>();
         polyline.setPoints(geoPoints);
         map.getOverlayManager().add(polyline);
 
         // Initialisiere den LocationManager
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        db = TrackingDatabase.getInstance(getApplicationContext());
 
         // Initialisiere TextViews und Buttons
         distanceTextView = binding.textviewDistance;
@@ -140,11 +133,10 @@ public class TrackingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 controller.onStopTrackingClicked();
-                controller.savePolyline(); // Polyline speichern
-                clearPolyline(); // Polyline löschen
                 showToast("Tracking gestoppt");
                 updateUI("0.00", 0, 0.0);
-
+                polyline.setPoints(new ArrayList<>()); // Polyline löschen
+                map.invalidate();
             }
         });
 
@@ -155,35 +147,6 @@ public class TrackingActivity extends AppCompatActivity {
     }
 
 
-    private void clearPolyline() {
-        polyline.setPoints(new ArrayList<GeoPoint>());
-        map.invalidate();
-    }
-
-    private void loadSavedPolyline() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<TrackingData> allTrackingData = db.trackingDataDao().getAllTrackingData();
-                if (!allTrackingData.isEmpty()) {
-                    TrackingData latestTrackingData = allTrackingData.get(allTrackingData.size() - 1);
-                    final List<GeoPoint> loadedGeoPoints = stringToGeoPoints(latestTrackingData.geoPoints);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            polyline.setPoints(loadedGeoPoints);
-                            map.invalidate(); // Karte aktualisieren
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
-    public void updatePolyline(List<GeoPoint> geoPoints) {
-        polyline.setPoints(geoPoints);
-        map.invalidate(); // Karte aktualisieren
-    }
 
     private List<GeoPoint> stringToGeoPoints(String geoPointsString) {
         List<GeoPoint> points = new ArrayList<>();
@@ -197,6 +160,13 @@ public class TrackingActivity extends AppCompatActivity {
             }
         }
         return points;
+    }
+
+    public void updatePolyline(List<GeoPoint> geoPoints) {
+        if (polyline != null) { // Überprüfen, ob polyline nicht null ist
+            polyline.setPoints(geoPoints);
+            map.invalidate(); // Karte aktualisieren
+        }
     }
 
     @Override
