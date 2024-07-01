@@ -2,6 +2,12 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="TrackingActivityE2ETest">
+        <State />
+      </entry>
+      <entry key="TrackingDatabaseTest">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <runningDeviceTargetSelectedWithDropDown>
@@ -15,8 +21,11 @@
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-06-26T16:52:09.610833Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-06-29T14:20:14.661762Z" />
         </State>
+      </entry>
+      <entry key="testFullScenario()">
+        <State />
       </entry>
     </value>
   </component>

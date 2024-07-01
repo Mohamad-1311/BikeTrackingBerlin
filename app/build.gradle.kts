@@ -48,6 +48,13 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+
+
+
     val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
@@ -73,4 +80,8 @@ dependencies {
 
 
 
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
+
+
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 }

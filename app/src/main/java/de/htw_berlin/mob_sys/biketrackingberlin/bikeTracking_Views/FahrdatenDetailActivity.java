@@ -80,16 +80,16 @@ public class FahrdatenDetailActivity extends AppCompatActivity {
         if (extras != null) {
             int fahrtID = extras.getInt("FAHRT_ID");
             String datum = extras.getString("DATUM");
-            String strecke = extras.getString("STRECKE");
-            String geschwindigkeit = extras.getString("GESCHWINDIGKEIT");
+            double strecke = extras.getDouble("STRECKE");
+            double geschwindigkeit = extras.getDouble("GESCHWINDIGKEIT");
             long dauer = extras.getLong("DAUER");
             String polylineEncoded = extras.getString("POLYLINE");
 
             textViewFahrtID.setText(String.valueOf(fahrtID));
             textViewDatum.setText(datum);
-            textViewStrecke.setText(strecke);
-            textViewGeschwindigkeit.setText(geschwindigkeit);
-            textViewDauer.setText(String.valueOf(dauer) + " s");
+            textViewStrecke.setText(String.format("%.2f km", strecke));
+            textViewGeschwindigkeit.setText(String.format("%.2f km/h", geschwindigkeit));
+            textViewDauer.setText(formatTime(dauer));
 
             // Polyline zeichnen
             if (polylineEncoded != null && !polylineEncoded.isEmpty()) {
@@ -109,6 +109,13 @@ public class FahrdatenDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private String formatTime(long timeInSeconds) {
+        long hours = timeInSeconds / 3600;
+        long minutes = (timeInSeconds % 3600) / 60;
+        long seconds = timeInSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     private List<GeoPoint> decodePolyline(String encoded) {

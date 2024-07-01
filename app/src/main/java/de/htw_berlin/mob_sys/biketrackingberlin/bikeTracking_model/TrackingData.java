@@ -7,10 +7,9 @@ import androidx.room.PrimaryKey;
 public class TrackingData {
     @PrimaryKey(autoGenerate = true)
     public int id;
-
     public double totalDistance;
     public long elapsedTimeInSeconds;
     public double speed;
-
-
+    public String date; // Hinzufügen des Datumsfeldes
+    public String geoPoints; // Encoded Polyline String
 }

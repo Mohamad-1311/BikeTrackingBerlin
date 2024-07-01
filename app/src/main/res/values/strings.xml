@@ -16,7 +16,7 @@
 
 
     <string name="textview_distance">%s km</string>
-    <string name="textview_time">%s seconds</string>
+    <string name="textview_time">%s </string>
     <string name="textview_speed">%s km/h</string>
 
 

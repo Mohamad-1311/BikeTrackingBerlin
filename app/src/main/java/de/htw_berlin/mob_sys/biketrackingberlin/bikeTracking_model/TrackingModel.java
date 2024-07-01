@@ -5,7 +5,6 @@ public class TrackingModel {
     private long elapsedTimeInSeconds;
     private double speed;
 
-
     public double getTotalDistance() {
         return totalDistance;
     }

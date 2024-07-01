@@ -3,6 +3,9 @@ package de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_Views;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -31,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htw_berlin.mob_sys.biketrackingberlin.R;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingData;
+import de.htw_berlin.mob_sys.biketrackingberlin.bikeTracking_model.TrackingDatabase;
 import de.htw_berlin.mob_sys.biketrackingberlin.controller.TrackingController;
 import de.htw_berlin.mob_sys.biketrackingberlin.databinding.ActivityTrackingBinding;
 
@@ -49,6 +55,8 @@ public class TrackingActivity extends AppCompatActivity {
     private Polyline polyline;
     private List<GeoPoint> geoPoints;
     private LocationManager locationManager;
+
+    private TrackingDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +81,11 @@ public class TrackingActivity extends AppCompatActivity {
         // MyLocationNewOverlay initialisieren
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
         mLocationOverlay.enableMyLocation();
-        mLocationOverlay.enableFollowLocation();
+        mLocationOverlay.enableFollowLocation(); // Automatisches Folgen der Benutzerposition
+
+        // Initialisiere die Datenbank
+        db = TrackingDatabase.getInstance(getApplicationContext());
+
         map.getOverlays().add(mLocationOverlay);
 
         // CompassOverlay hinzufügen
@@ -128,8 +140,11 @@ public class TrackingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 controller.onStopTrackingClicked();
+                controller.savePolyline(); // Polyline speichern
+                clearPolyline(); // Polyline löschen
                 showToast("Tracking gestoppt");
                 updateUI("0.00", 0, 0.0);
+
             }
         });
 
@@ -137,6 +152,51 @@ public class TrackingActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
+    }
+
+
+    private void clearPolyline() {
+        polyline.setPoints(new ArrayList<GeoPoint>());
+        map.invalidate();
+    }
+
+    private void loadSavedPolyline() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<TrackingData> allTrackingData = db.trackingDataDao().getAllTrackingData();
+                if (!allTrackingData.isEmpty()) {
+                    TrackingData latestTrackingData = allTrackingData.get(allTrackingData.size() - 1);
+                    final List<GeoPoint> loadedGeoPoints = stringToGeoPoints(latestTrackingData.geoPoints);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            polyline.setPoints(loadedGeoPoints);
+                            map.invalidate(); // Karte aktualisieren
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    public void updatePolyline(List<GeoPoint> geoPoints) {
+        polyline.setPoints(geoPoints);
+        map.invalidate(); // Karte aktualisieren
+    }
+
+    private List<GeoPoint> stringToGeoPoints(String geoPointsString) {
+        List<GeoPoint> points = new ArrayList<>();
+        String[] pairs = geoPointsString.split(";");
+        for (String pair : pairs) {
+            if (!pair.trim().isEmpty()) {
+                String[] coords = pair.split(",");
+                double lat = Double.parseDouble(coords[0]);
+                double lon = Double.parseDouble(coords[1]);
+                points.add(new GeoPoint(lat, lon));
+            }
+        }
+        return points;
     }
 
     @Override
@@ -196,5 +256,9 @@ public class TrackingActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public TrackingController getController() {
+        return controller;
     }
 }

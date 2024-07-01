@@ -52,8 +52,11 @@ public class HistoryActivity extends AppCompatActivity {
             public void onItemClick(TrackingData trackingData) {
                 Intent intent = new Intent(HistoryActivity.this, FahrdatenDetailActivity.class);
                 intent.putExtra("FAHRT_ID", trackingData.id);
+                intent.putExtra("DATUM", trackingData.date); // Datum hinzufügen
                 intent.putExtra("STRECKE", trackingData.totalDistance);
                 intent.putExtra("GESCHWINDIGKEIT", trackingData.speed);
+                intent.putExtra("DAUER", trackingData.elapsedTimeInSeconds);
+                intent.putExtra("POLYLINE", trackingData.geoPoints); // Polyline-Daten hinzufügen
                 startActivity(intent);
             }
         });
@@ -99,7 +102,7 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
